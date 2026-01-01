@@ -1,11 +1,11 @@
-import './App.css'
+import GlobalLayout from './layouts/GlobalLayout'
 
 function App() {
 
   return (
-    <>
-     <h1>Hello lockly</h1>
-    </>
+    <GlobalLayout>
+      <h1>theme</h1>
+    </GlobalLayout>
   )
 }
 
