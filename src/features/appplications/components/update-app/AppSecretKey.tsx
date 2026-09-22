@@ -21,7 +21,7 @@ type Props = {
   tenantId: string;
 };
 
-export default function SecretKeySection({ appId, tenantId }: Props) {
+export default function SecretKeyManagement({ appId, tenantId }: Props) {
   const { data: app, isLoading } = useAppDetails(tenantId, appId ?? "");
 
 

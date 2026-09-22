@@ -1,7 +1,7 @@
 import { Bloc, Input, Spacer } from "@houssemdi2000/design-system";
 import { useUpdateAppFormContext } from "../../contexts/UpdateAppFormContext";
 
-export default function AppGeneralInfo() {
+export default function AppGeneralSettings() {
   const { form, updateField } = useUpdateAppFormContext();
 
   return (

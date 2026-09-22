@@ -9,6 +9,8 @@ import {
   useTheme,
 } from "@houssemdi2000/design-system";
 import { routes } from "../routes/routes";
+import { FiSun, FiMoon } from "react-icons/fi";
+
 
 export default function GlobalLayout({
   children,
@@ -45,8 +47,11 @@ export default function GlobalLayout({
         right={
           <Bloc layout="navbar" padding={0} style={{gap: '10px'}}>
             <Button
-              label={isDarkMode ? "Light" : "Dark"}
+              label={isDarkMode ? "lumière" : "sombre"}
               onClick={() => toggleDarkMode()}
+              variant={isDarkMode ? "light" : "dark"}
+              icon={isDarkMode ? <FiSun /> : <FiMoon />}
+              size="small"
             />
             <ProfileMenu
               user={{ name: "Houssem Adouani", email: "houssem@email.com" }}

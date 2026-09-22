@@ -15,7 +15,7 @@ type props = {
   appId: string;
 };
 
-export default function BarandingSection({ appId }: props) {
+export default function BrandingSection({ appId }: props) {
   const { form, updateField } = useUpdateAppFormContext();
   const navigate = useNavigate();
 

@@ -5,7 +5,8 @@ import { ErrorBoundary } from "../components/errors/ErrorBoundary";
 export const routes = {
   apps: "/apps",
   updateApp: (appId: string) => `/apps/update/${appId}`,
-  updateAppBranding: (appId: string) => `/apps/update/${appId}/branding`
+  updateAppBranding: (appId: string) => `/apps/update/${appId}/branding`,
+  appConsumers: (appId: string) => `/apps/consumers/${appId}`,
 }
 
 export const Routes = () => {

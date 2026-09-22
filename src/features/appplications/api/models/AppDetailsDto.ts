@@ -11,6 +11,12 @@ export interface AppDetailsDto extends AppDto {
   allowedOrigins?: string[];
   branding?: AppClientBrandingDto;
   scopes?: string[];
+  tokenExpiresIn?: number;
+  resetTokenExpiresIn?: number;
+  redirectUrl: string;
+  logoutUrl?: string;
+  resetPasswordUrl: string;
+  numberOfConsumers: number;
 }
 
 export type MFASettingsDto = {

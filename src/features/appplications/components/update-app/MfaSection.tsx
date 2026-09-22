@@ -6,7 +6,7 @@ import {
 import { useUpdateAppFormContext } from "../../contexts/UpdateAppFormContext";
 
 
-export default function MfaSection() {
+export default function MfaSettings() {
   const { updateField, form } = useUpdateAppFormContext();
 
   const level = getMfaSecurityLevel(form.mfaExpiresIn);

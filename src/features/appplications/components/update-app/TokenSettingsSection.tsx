@@ -6,7 +6,7 @@ import {
 import { useUpdateAppFormContext } from "../../contexts/UpdateAppFormContext";
 
 
-export default function TokenSettingsSection() {
+export default function TokenExpirationSettings() {
   const { form, updateField } = useUpdateAppFormContext();
 
   const level = getAuthTokenSecurityLevel(form.tokenExpiresIn);

@@ -1,9 +1,9 @@
-import { createContext, useContext, useState, type Dispatch, type PropsWithChildren, type SetStateAction } from "react";
+import { createContext, useContext, useState, useEffect, type Dispatch, type PropsWithChildren, type SetStateAction } from "react";
 import type { UpdateAppDto } from "../api/models/UpdateAppDto";
 import type { AppDetailsDto } from "../api/models/AppDetailsDto";
 import { useUpdateAppForm } from "../hooks/useUpdateAppForm";
 
-type UpdateAppFormContextType = {
+type UpdateAppContextType = {
   form: {
     name: string;
     redirectUrl: string;
@@ -13,18 +13,19 @@ type UpdateAppFormContextType = {
     email: string ;
     isActive: boolean;
   };
-  updateField: <K extends keyof UpdateAppFormContextType["form"]>(
+  updateField: <K extends keyof UpdateAppContextType["form"]>(
     key: K,
-    value: UpdateAppFormContextType["form"][K]
+    value: UpdateAppContextType["form"][K]
   ) => void;
   updateAppDto: UpdateAppDto;
   canActive: boolean;
   isActive: boolean;
   setIsActive: Dispatch<SetStateAction<boolean>>;
+  numberOfConsumers: number;
 };
 
 export const UpdateAppFormContext =
-  createContext<UpdateAppFormContextType | null>(null);
+  createContext<UpdateAppContextType | null>(null);
 
 export const useUpdateAppFormContext = () => {
   const ctx = useContext(UpdateAppFormContext);
@@ -40,9 +41,11 @@ type Props = PropsWithChildren<{
   app: AppDetailsDto;
 }>;
 
-export function UpdateAppFormProvider({ app, children }: Props) {
-  const { form, updateField, updateAppDto, isFormValid } = useUpdateAppForm(app);
-  const canActive =
+const isAppReadyForActivation = (
+  app: AppDetailsDto,
+  isFormValid: boolean
+): boolean => {
+  return (
     app?.isActive === false &&
     app?.name !== undefined &&
     app?.name?.trim() !== "" &&
@@ -51,18 +54,28 @@ export function UpdateAppFormProvider({ app, children }: Props) {
     app?.resetPasswordUrl !== undefined &&
     app?.resetPasswordUrl?.trim() !== "" &&
     app?.tokenExpiresIn !== undefined &&
-    app?.tokenExpiresIn > 0  &&
+    app?.tokenExpiresIn > 0 &&
     app?.mfaSettings?.expiryMinutes !== undefined &&
     app?.mfaSettings?.expiryMinutes > 0 &&
     app?.branding?.supportEmail !== undefined &&
     app?.branding?.supportEmail?.trim() !== "" &&
     isFormValid
+  );
+};
 
-    const [isActive, setIsActive] = useState(app?.isActive);
+export function UpdateAppFormProvider({ app, children }: Props) {
+  const { form, updateField, updateAppDto, isFormValid } = useUpdateAppForm(app);
+  const canActive = isAppReadyForActivation(app, isFormValid);
+  const [isActive, setIsActive] = useState(app?.isActive);
+
+  // Synchronize isActive with app changes from server
+  useEffect(() => {
+    setIsActive(app?.isActive);
+  }, [app?.isActive]);
 
   return (
     <UpdateAppFormContext.Provider
-      value={{ form, updateField, updateAppDto, canActive, isActive, setIsActive }}
+      value={{ form, updateField, updateAppDto, canActive, isActive, setIsActive, numberOfConsumers: app?.numberOfConsumers ?? 0 }}
     >
       {children}
     </UpdateAppFormContext.Provider>

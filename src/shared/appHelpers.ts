@@ -103,3 +103,14 @@ export const getAuthTokenSecurityLevel = (minutes?: number) => {
   };
 };
 
+export const maskId = (id?: string): string => {
+  if (!id) return "";
+
+  const visiblePart = id.slice(0, 3);
+  const maskedPart = "*".repeat(Math.max(id.length - 3, 0));
+
+  return visiblePart + maskedPart;
+};
+
+
+export const PAGE_SIZE = 5;

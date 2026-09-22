@@ -12,7 +12,7 @@ import { useUpdateAppFormContext } from "../../contexts/UpdateAppFormContext";
 
 
 
-export default function RedirectUrlsSection() {
+export default function RedirectUrlSettings() {
 const { form, updateField } = useUpdateAppFormContext();
     
   return (

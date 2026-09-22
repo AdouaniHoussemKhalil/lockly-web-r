@@ -1,19 +1,22 @@
 import {
-  Colors,
   FormBuilder,
   type FormField,
 } from "@houssemdi2000/design-system";
 import type { CreateAppDto } from "../api/models/CreateAppDto";
 import { useCreateApp } from "../hooks/useApps";
 
-export const CreateAppForm = () => {
+type Props = {
+  onSuccess: () => void;
+};
+
+export const CreateAppForm = ({ onSuccess }: Props ) => {
   const fields: FormField[] = [
     {
       type: "text",
       name: "name",
       placeholder: "Nommer votre application",
       required: true,
-      color: Colors.primary[500],
+      color: "0e329fff",
     },
   ];
 
@@ -33,6 +36,7 @@ export const CreateAppForm = () => {
       };
 
       createApp(dto);
+      onSuccess();
     } catch (error: any) {
       console.error(error);
     }
@@ -45,7 +49,7 @@ export const CreateAppForm = () => {
         isDarkMode
         layout="block"
         btn={{
-          label: "Créer",
+          label: "Initialiser",
           size: "medium",
         }}
         onSubmit={handleCreateApp}

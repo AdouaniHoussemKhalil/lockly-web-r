@@ -1,7 +1,7 @@
 import { Alert, Bloc, Spacer } from "@houssemdi2000/design-system";
 import { useUpdateAppFormContext } from "../../contexts/UpdateAppFormContext";
 
-export default function AppRemark() {
+export default function AppStatusRemark() {
   const { canActive, isActive } = useUpdateAppFormContext();
 
   const remark = (() => {

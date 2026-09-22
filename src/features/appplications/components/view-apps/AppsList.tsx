@@ -1,26 +1,41 @@
 import {
-    Button,
+  Button,
   Colors,
+  Pagination,
   SmartTable,
+  Spacer,
   TableFilterBar,
   Tag,
   Text,
   type TableColumn,
   type TableFilter,
 } from "@houssemdi2000/design-system";
-import { useApps } from "../hooks/useApps";
+import { useApps } from "../../hooks/useApps";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { routes } from "../../../routes/routes";
-import type { AppDto } from "../api/models/AppDto";
-import { formatDate } from "../../../shared/appHelpers";
+import { routes } from "../../../../routes/routes";
+import type { AppDto } from "../../api/models/AppDto";
+import { formatDate, maskId, PAGE_SIZE } from "../../../../shared/appHelpers";
+import { FiArrowRight } from "react-icons/fi";
 
 export default function AppsList() {
   const apps = useApps("455a490e-6cd9-423e-a458-e3f1281d7ffc").data;
 
   const isDarkMode = localStorage.getItem("mode") === "dark";
 
+  const [page, setPage] = useState(1);
+
+  const [initialState, setInitialState] = useState({
+    selectedId: "",
+  });
+
   const navigate = useNavigate();
+
+  const handleViewDetails = () => {
+    if (initialState.selectedId) {
+      navigate(routes.updateApp(initialState.selectedId));
+    }
+  };
 
   if (!apps || apps.length === 0) {
     return (
@@ -31,28 +46,20 @@ export default function AppsList() {
   }
 
   const columns: TableColumn<AppDto>[] = [
-    { key: "name", label: "Name" },
-    { key: "redirectUrl", label: "Redirect URL" },
-    { key: "resetPasswordUrl", label: "Reset Password URL" },
+    { key: "name", label: "Nom d'application" },
     {
-      key: "tokenExpiresIn",
-      label: "Token expired in",
-      render: (value) => value?.toString().replace("d", " days"),
-    },
-    {
-      key: "resetTokenExpiresIn",
-      label: "Reset token expired in",
-      render: (value) => value?.toString().replace("m", " minutes"),
+      key: "id",
+      label: "ID client",
+      render: (value) => maskId(value as string),
     },
     {
       key: "createdAt",
-      label: "Created At",
-      render: (value) =>
-        formatDate(value as string)
+      label: "Date de création",
+      render: (value) => formatDate(value as string),
     },
     {
       key: "isActive",
-      label: "IsActif",
+      label: "Statut",
       render: (value) =>
         value ? (
           <Tag background={Colors.green[500]} label="Actif" />
@@ -104,6 +111,11 @@ export default function AppsList() {
     });
   }, [apps, filters]);
 
+  const paginatedData = filteredData.slice(
+    (page - 1) * PAGE_SIZE,
+    page * PAGE_SIZE,
+  );
+
   return (
     <>
       <TableFilterBar
@@ -115,21 +127,38 @@ export default function AppsList() {
         isDarkMode={localStorage.getItem("mode") === "dark"}
       />
 
-      {/* TABLE */}
       <SmartTable
-        data={filteredData}
+        data={paginatedData}
         columns={columns}
         enableSorting
-        withCheckBox
-        checkBoxColor={Colors.primary[500]}
         striped
         clickable
-        onRowClick={(row) => alert(`Clicked: ${row.name}`)}
+        onRowClick={(row) => setInitialState({ selectedId: row.id })}
         emptyText="Non défini"
         withActions
-        actions={<Button size="small" label="Edit" variant="danger" onClick={() => navigate(routes.updateApp("096abf93-b8db-4a37-98e2-bb28a605b215"))}/>}
+        bordered
+        actions={
+          <>
+          <Button
+            size="small"
+            label="Voir"
+            variant="light"
+            icon={<FiArrowRight />}
+            iconPosition="right"
+            onClick={handleViewDetails}
+          />
+          </>
+        }
         isDarkMode={isDarkMode}
       />
+      <Pagination
+        page={page}
+        pageSize={PAGE_SIZE}
+        total={filteredData.length}
+        onPageChange={setPage}
+        isDarkMode={isDarkMode}
+      />
+      <Spacer/>
     </>
   );
 }

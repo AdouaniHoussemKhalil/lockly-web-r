@@ -22,9 +22,9 @@ function UpdateAppContent({
   const { updateAppDto, isActive, setIsActive } = useUpdateAppFormContext();
   const { mutate: updateApp, isPending } = useUpdateApp(tenantId, appId);
   const { mutate: activationApp, isPending: isActivationPending } =
-    useActivationApp(tenantId, appId, isActive);
-  
-    const navigate = useNavigate();
+    useActivationApp(tenantId, appId, !isActive);
+
+  const navigate = useNavigate();
 
   const { mutate: deleteApp, isPending: isDeletePending } = useDeleteApp(tenantId, appId, () => navigate(routes.apps));
 
@@ -37,8 +37,9 @@ function UpdateAppContent({
   }
 
   const handleActivation = () => {
-    activationApp();
+    // Optimistic update
     setIsActive(!isActive);
+    activationApp();
   };
 
   return (

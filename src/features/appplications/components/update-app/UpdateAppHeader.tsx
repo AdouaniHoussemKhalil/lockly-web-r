@@ -1,7 +1,15 @@
-import { Header, Button, Modal } from "@houssemdi2000/design-system";
-import { FiSave, FiTrash, FiCloud, FiCloudOff } from "react-icons/fi";
+import {
+  Header,
+  Button,
+  Modal,
+  IconButton,
+  Bloc,
+} from "@houssemdi2000/design-system";
+import { FiSave, FiTrash, FiCloud, FiCloudOff, FiUsers, FiArrowLeft } from "react-icons/fi";
 import { useUpdateAppFormContext } from "../../contexts/UpdateAppFormContext";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { routes } from "../../../../routes/routes";
 
 type Props = {
   handleSave: () => void;
@@ -13,18 +21,28 @@ type Props = {
   isDeleteLoading: boolean;
 };
 
-export default function AppHeader({
+export default function UpdateAppHeader({
   handleSave,
   handleActivation,
   isActivationLoading,
   isUpdateLoading,
   isAppActive,
   handleDelete,
-  isDeleteLoading
+  isDeleteLoading,
 }: Props) {
   const isDarkMode = localStorage.getItem("mode") === "dark";
 
-  const { canActive } = useUpdateAppFormContext();
+  const navigate = useNavigate();
+
+  const handleBack = () => {
+    navigate(routes.apps);
+  }
+
+  const handleViewConsumers = () => {
+    navigate(routes.appConsumers("90ed6b6a-1582-448f-8e7c-6b0fd1d781a4"));
+  }
+
+  const { canActive, numberOfConsumers } = useUpdateAppFormContext();
 
   const [isDeleteConfirmedOpenModal, setIsDeleteConfirmedOpenModal] =
     useState(false);
@@ -40,6 +58,23 @@ export default function AppHeader({
   return (
     <Header
       isDarkMode={isDarkMode}
+      left={
+        <Bloc padding={0} layout="navbar">
+          <IconButton
+            size="large"
+            icon={<FiArrowLeft />}
+            onClick={handleBack}
+          />
+          <Button
+            size="small"
+            variant="secondary"
+            icon={<FiUsers />}
+            iconPosition="right"
+            onClick={handleViewConsumers}
+            label={`${numberOfConsumers} utilisateur${numberOfConsumers > 1 ? "s" : ""}`}
+          />{" "}
+        </Bloc>
+      }
       right={
         <>
           <Button
